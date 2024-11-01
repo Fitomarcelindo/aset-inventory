@@ -18,6 +18,13 @@ $status = '';
 $asset_class = '';
 $acquisition_date = '';
 $location = '';
+$status_options = [
+    "directing" => "Directing",
+    "idle" => "Idle",
+    "perbaikan" => "Perbaikan",
+    "usul hapus" => "Usul hapus",
+    "ketinggalan" => "Ketinggalan Teknologi"
+];
 // Mendapatkan daftar area dari database
 $stmt = $pdo->prepare("SELECT * FROM Areas");
 $stmt->execute();
@@ -51,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $puserif_number = $_POST['puserif_number'];
     $puslibtang_number = $_POST['puslibtang_number'];
     $name = $_POST['name'];
-    $status = $_POST['status'];
+    $status = $_POST['statuse'];
     $description = $_POST['description'];
     $asset_class = $_POST['asset_class'];
     $acquisition_date = $_POST['acquisition_date'];
@@ -59,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Tambah aset baru
     if (!$id) {
-        $stmt = $pdo->prepare("INSERT INTO Assets (area_id, puserif_number, puslibtang_number, name, description, asset_class, acquisition_date, location) VALUES (:area_id, :puserif_number, :puslibtang_number, :name, :description, :asset_class, :acquisition_date, :location)");
+        $stmt = $pdo->prepare("INSERT INTO Assets (area_id, puserif_number, puslibtang_number,status , name, description, asset_class, acquisition_date, location) VALUES (:area_id, :puserif_number, :puslibtang_number, :status ,:name, :description, :asset_class, :acquisition_date, :location)");
         $stmt->execute([
             'area_id' => $area_id,
             'puserif_number' => $puserif_number,
@@ -74,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Asset added successfully.";
     } else {
         // Update aset
-        $stmt = $pdo->prepare("UPDATE Assets SET area_id = :area_id, puserif_number = :puserif_number, puslibtang_number = :puslibtang_number, name = :name, description = :description, asset_class = :asset_class, acquisition_date = :acquisition_date, location = :location WHERE asset_id = :id");
+        $stmt = $pdo->prepare("UPDATE Assets SET area_id = :area_id, puserif_number = :puserif_number, puslibtang_number = :puslibtang_number, status = :status, name = :name, description = :description, asset_class = :asset_class, acquisition_date = :acquisition_date, location = :location WHERE asset_id = :id");
         $stmt->execute([
             'area_id' => $area_id,
             'puserif_number' => $puserif_number,
@@ -105,10 +112,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </ol>
 </section>
 
-
 <!-- Main content -->
 <section class="content">
-
     <div class="box">
         <div class="box-header">
             <h3 class="box-title">Add Assets</h3>
@@ -118,7 +123,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </a>
             </div>
         </div>
-
         <div class="box-body">
             <div class="row">
                 <div class="col-md-4 col-md-offset-4">
@@ -128,21 +132,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <select name="area_id" class="form-control">
                                 <option>Pilih Area</option>
 
-                                <?php foreach ($areas as $area): ?>
-                                    <option value="<?= $area['area_id'] ?> " <?php $area['area_id'] == $area_id ? "selected" : null ?>>
-                                        <?= $area['area_code'] . " - " . $area['area_name'] ?>
-                                    </option>
-                                <?php endforeach; ?>
+                                <?php
+                                foreach ($areas as $area) {
+                                    echo '<option value="' . $area['area_id'] . '" ' . ($area['area_id'] == $area_id ? 'selected' : '') . '>';
+                                    echo $area['area_code'] . ' - ' . $area['area_name'];
+                                    echo '</option>';
+                                }
+                                ?>
+
                             </select>
 
                         </div>
                         <div class="form-group">
                             <label>Puserif Number:</label>
-                            <input type="text" name="puserif_number" value="<?= htmlspecialchars($puserif_number) ?>" class="form-control" required>
+                            <input type="number" name="puserif_number" value="<?= htmlspecialchars($puserif_number) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Puslibtang Number:</label>
-                            <input type="text" name="puslibtang_number" value="<?= htmlspecialchars($puslibtang_number) ?>" class="form-control" required>
+                            <input type="number" name="puslibtang_number" value="<?= htmlspecialchars($puslibtang_number) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Name:</label>
@@ -151,16 +158,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-group">
                             <label>Status : </label>
-                            <select name="status">
+                            <select name="statuse" class="form-control">
                                 <option>Pilih Status</option>
 
-                                <option value="operating">Operating</option>
-                                <option value="directing" <?php $status == 'directing' ? 'selected' : null ?>>Directing</option>
-                                <option value="idle" <?php $status == 'idle' ? 'selected' : null ?>>Idle</option>
-                                <option value="perbaikan" <?php $status == 'perbaikan' ? 'selected' : null ?>>Perbaikan</option>
-                                <option value="usul hapus" <?php $status == 'usul hapus' ? 'selected' : null ?>>Usul hapus</option>
-                                <option value="ketinggalan" <?php $status == 'ketinggalan' ? 'selected' : null ?>>Ketinggalan Teknologi</option>
-
+                                <?php
+                                foreach ($status_options as $value => $label) {
+                                    echo '<option value="' . $value . '" ' . ($status == $value ? 'selected' : '') . '>' . $label . '</option>';
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="form-group">
@@ -182,7 +187,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                         <div class="form-group">
                             <button type="submit" class="btn btn-success">
-                                <i class="fa fa-paper-plane"></i> <?= $id ? 'Update' : 'Add' ?> Asset
+                                <i class="fa fa-paper-plane"></i> <?php $id ? 'Update' : 'Add' ?> Asset
                             </button>
                             <button type="reset" class="btn btn-flat">Reset</button>
                         </div>

@@ -31,9 +31,7 @@ $assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="box-header">
             <h3 class="box-title">ATTB</h3>
             <div class="pull-right">
-                <a href="asset_form.php" class="btn btn-primary btn-flat">
-                    <i class="fa fa-user-plus"></i> Add Assets
-                </a>
+
             </div>
         </div>
         <div class="box-body table-responsive">

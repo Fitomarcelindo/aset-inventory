@@ -1,5 +1,8 @@
 <!-- main.php -->
 <?php
+
+// declare(strict_types=1);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -9,23 +12,38 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-include_once 'includes/head.php';
+require_once 'includes/head.php';
+
+$content = $content ?? '';
 ?>
 
 <body class="hold-transition skin-blue sidebar-mini">
-
-
     <div class="wrapper">
         <?php
-        include_once 'includes/header.php';
-        include_once 'includes/sidebar.php';
+        if (file_exists('includes/header.php')) {
+            include_once 'includes/header.php';
+        } else {
+            echo '<p>Error: header.php not found.</p>';
+        }
+
+        if (file_exists('includes/sidebar.php')) {
+            include_once 'includes/sidebar.php';
+        } else {
+            echo '<p>Error: sidebar.php not found.</p>';
+        }
         ?>
+
         <div class="content-wrapper">
-            <!-- This will be the main content section where pages are displayed -->
-            <?= $content ?>
+            <?= htmlspecialchars($content, ENT_QUOTES, 'UTF-8') ?>
         </div>
 
-        <?php include_once 'includes/footer.php'; ?>
+        <?php
+        if (file_exists('includes/footer.php')) {
+            include_once 'includes/footer.php';
+        } else {
+            echo '<p>Error: footer.php not found.</p>';
+        }
+        ?>
     </div>
 
     <script src="assets/bower_components/jquery/dist/jquery.min.js"></script>

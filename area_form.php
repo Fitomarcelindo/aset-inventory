@@ -82,12 +82,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="post">
                         <div class="form-group">
                             <label>Area Code:</label>
-                            <input type="text" name="area_code" value="<?= htmlspecialchars($area_code) ?>" required>
+                            <input class="form-control" type="text" name="area_code" value="<?= htmlspecialchars($area_code) ?>" required>
                             <br>
                         </div>
                         <div class="form-group">
                             <label>Area Name:</label>
-                            <input type="text" name="area_name" value="<?= htmlspecialchars($area_name) ?>" required>
+                            <input type="text" name="area_name" value="<?= htmlspecialchars($area_name) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <button type="submit" class="btn btn-success btn-flat">
