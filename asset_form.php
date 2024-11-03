@@ -20,6 +20,7 @@ $acquisition_date = '';
 $acquisition_value = '';
 $location = '';
 $status_options = [
+    "operating" => "Operating",
     "directing" => "Directing",
     "idle" => "Idle",
     "perbaikan" => "Perbaikan",
@@ -151,11 +152,11 @@ include('templates/top.php');
 
                         </div>
                         <div class="form-group">
-                            <label>Puserif Number:</label>
+                            <label>Pusertif Number:</label>
                             <input type="number" name="puserif_number" value="<?= htmlspecialchars($puserif_number) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
-                            <label>Puslibtang Number:</label>
+                            <label>Puslitbang Number:</label>
                             <input type="number" name="puslibtang_number" value="<?= htmlspecialchars($puslibtang_number) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">

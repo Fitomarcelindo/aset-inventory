@@ -40,8 +40,8 @@ $assets = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <tr>
                         <th>No</th>
                         <th>Bidang Area</th>
-                        <th>Puserif Number</th>
-                        <th>Puslibtang Number</th>
+                        <th>Pusertif Number</th>
+                        <th>Puslitbang Number</th>
                         <th>Name</th>
                         <th>Description</th>
                         <th>Asset Class</th>

@@ -45,8 +45,8 @@ include('templates/top.php');
         <tr>
             <th>Asset ID</th>
             <th>Area</th>
-            <th>Puserif Number</th>
-            <th>Puslibtang Number</th>
+            <th>Pusertif Number</th>
+            <th>Puslitbang Number</th>
             <th>Name</th>
             <th>Description</th>
             <th>Asset Class</th>

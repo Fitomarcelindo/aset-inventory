@@ -7,18 +7,21 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+
 $areas = $pdo->query("SELECT area_name, area_id, area_code FROM areas")->fetchAll(PDO::FETCH_ASSOC);
 $labs = $pdo->query("SELECT lab_name, lab_id FROM labs")->fetchAll(PDO::FETCH_ASSOC);
 // Mendapatkan daftar aset dari database
 $status_options = [
+    "operating" => "Operating",
     "directing" => "Directing",
     "idle" => "Idle",
     "perbaikan" => "Perbaikan",
     "usul hapus" => "Usul hapus",
     "ketinggalan" => "Ketinggalan Teknologi"
 ];
-$lab_id = '';
-
+$area_id = $_GET['area_name'] ?? '';
+$lab_id = $_GET['lab_id'] ?? '';
+$status = $_GET['status'] ?? '';
 $sql = "SELECT areas.area_name , labs.lab_name , assets.*  FROM assets join areas on assets.area_id = areas.area_id  JOIN labs on assets.lab_id = labs.lab_id where status != 'removed'";
 if (!empty($area_id)) {
     $sql .= " AND areas.area_id = :area_id";
@@ -74,7 +77,7 @@ include('templates/top.php');
                 <div class="form-group">
                     <!-- Filter untuk Area -->
                     <select name="area_name" class="form-control">
-                        <option>Pilih Area</option>
+                        <option value="">Pilih Area</option>
                         <?php
                         foreach ($areas as $area) {
                             echo '<option value="' . $area['area_id'] . '" ' . ($area['area_id'] == $area_id ? 'selected' : '') . '>';
@@ -86,7 +89,7 @@ include('templates/top.php');
 
                     <!-- Filter untuk Lab -->
 
-                    <select name="lab_id" class="form-control" required>
+                    <select name="lab_id" class="form-control">
                         <option value="">Select a Lab</option>
                         <?php foreach ($labs as $lab): ?>
                             <option value="<?= $lab['lab_id'] ?>" <?= $lab_id == $lab['lab_id'] ? 'selected' : '' ?>>
@@ -98,8 +101,6 @@ include('templates/top.php');
                     <!-- Filter untuk Status -->
                     <select name="status" class="form-control">
                         <option value="">Select Status</option>
-                        <option>Pilih Status</option>
-
                         <?php
                         foreach ($status_options as $value => $label) {
                             echo '<option value="' . $value . '" ' . ($status == $value ? 'selected' : '') . '>' . $label . '</option>';
@@ -109,6 +110,8 @@ include('templates/top.php');
 
                     <button type="submit" class="btn btn-info">Filter</button>
                     <a href="export.php?<?= http_build_query($_GET) ?>" class="btn btn-success">Export to Excel</a>
+                    <a class="btn btn-flat" href="asset_list.php"> Reset</a>
+
                 </div>
             </form>
 
@@ -119,8 +122,8 @@ include('templates/top.php');
                     <tr>
                         <th>No</th>
                         <th>Bidang Area</th>
-                        <th>Puserif Number</th>
-                        <th>Puslibtang Number</th>
+                        <th>Pusertif Number</th>
+                        <th>Puslitbang Number</th>
                         <th>Name</th>
                         <th>Status</th>
                         <th>Description</th>
