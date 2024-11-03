@@ -17,6 +17,7 @@ $description = '';
 $status = '';
 $asset_class = '';
 $acquisition_date = '';
+$acquisition_value = '';
 $location = '';
 $status_options = [
     "directing" => "Directing",
@@ -25,6 +26,8 @@ $status_options = [
     "usul hapus" => "Usul hapus",
     "ketinggalan" => "Ketinggalan Teknologi"
 ];
+$lab_id = '';
+
 // Mendapatkan daftar area dari database
 $stmt = $pdo->prepare("SELECT * FROM Areas");
 $stmt->execute();
@@ -45,7 +48,9 @@ if ($id) {
         $description = $asset['description'];
         $asset_class = $asset['asset_class'];
         $acquisition_date = $asset['acquisition_date'];
+        $acquisition_value =  $asset['acquisition_value'];
         $location = $asset['location'];
+        $lab_id = $asset['lab_id'];
     } else {
         echo "Asset not found.";
         exit;
@@ -62,11 +67,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'];
     $asset_class = $_POST['asset_class'];
     $acquisition_date = $_POST['acquisition_date'];
+    $acquisition_value = $_POST['acquisition_value'];
     $location = $_POST['location'];
-
+    $lab_id = $asset['lab_id'];
     // Tambah aset baru
     if (!$id) {
-        $stmt = $pdo->prepare("INSERT INTO Assets (area_id, puserif_number, puslibtang_number,status , name, description, asset_class, acquisition_date, location) VALUES (:area_id, :puserif_number, :puslibtang_number, :status ,:name, :description, :asset_class, :acquisition_date, :location)");
+        $stmt = $pdo->prepare("INSERT INTO Assets (area_id, puserif_number, puslibtang_number,status , name, description, asset_class, acquisition_date, acquisition_value, location, lab_id) VALUES (:area_id, :puserif_number, :puslibtang_number, :status ,:name, :description, :asset_class, :acquisition_date, :acquisition_value, :location,  :lab_id)");
         $stmt->execute([
             'area_id' => $area_id,
             'puserif_number' => $puserif_number,
@@ -76,12 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'description' => $description,
             'asset_class' => $asset_class,
             'acquisition_date' => $acquisition_date,
+            'acquisition_value' => $acquisition_value,
             'location' => $location,
         ]);
         echo "Asset added successfully.";
     } else {
         // Update aset
-        $stmt = $pdo->prepare("UPDATE Assets SET area_id = :area_id, puserif_number = :puserif_number, puslibtang_number = :puslibtang_number, status = :status, name = :name, description = :description, asset_class = :asset_class, acquisition_date = :acquisition_date, location = :location WHERE asset_id = :id");
+        $stmt = $pdo->prepare("UPDATE Assets SET area_id = :area_id, puserif_number = :puserif_number, puslibtang_number = :puslibtang_number, status = :status, name = :name, description = :description, asset_class = :asset_class, acquisition_date = :acquisition_date, acquisition_value = :acquisition_value, location = :location , lab_id = :lab_id WHERE asset_id = :id");
         $stmt->execute([
             'area_id' => $area_id,
             'puserif_number' => $puserif_number,
@@ -91,15 +98,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'description' => $description,
             'asset_class' => $asset_class,
             'acquisition_date' => $acquisition_date,
+            'acquisition_value' => $acquisition_value,
             'location' => $location,
+            'lab_id' => $lab_id,
             'id' => $id,
         ]);
         echo "Asset updated successfully.";
     }
-
-    header("Location: asset_list.php");
+    echo '<script type="text/javascript">window.location.href = "asset_list.php";</script>';
     exit;
 }
+include('templates/top.php');
 ?>
 
 <section class="content-header">
@@ -131,7 +140,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <label>Area:</label>
                             <select name="area_id" class="form-control">
                                 <option>Pilih Area</option>
-
                                 <?php
                                 foreach ($areas as $area) {
                                     echo '<option value="' . $area['area_id'] . '" ' . ($area['area_id'] == $area_id ? 'selected' : '') . '>';
@@ -139,7 +147,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     echo '</option>';
                                 }
                                 ?>
-
                             </select>
 
                         </div>
@@ -157,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="form-group">
-                            <label>Status : </label>
+                            <label>Status:</label>
                             <select name="statuse" class="form-control">
                                 <option>Pilih Status</option>
 
@@ -173,12 +180,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <textarea name="description" class="form-control" required><?= htmlspecialchars($description) ?></textarea>
                         </div>
                         <div class="form-group">
+                            <label>Lab:</label>
+                            <select name="lab_id" class="form-control" required>
+                                <option value="">Select a Lab</option>
+                                <?php foreach ($labs as $lab): ?>
+                                    <option value="<?= $lab['lab_id'] ?>" <?= $lab_id == $lab['lab_id'] ? 'selected' : '' ?>>
+                                        <?= htmlspecialchars($lab['lab_name']) ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label>Asset Class:</label>
-                            <input type="text" name="asset_class" value="<?= htmlspecialchars($asset_class) ?>" class="form-control" required>
+                            <input type="number" name="asset_class" value="<?= htmlspecialchars($asset_class) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Acquisition Date:</label>
                             <input type="date" name="acquisition_date" value="<?= htmlspecialchars($acquisition_date) ?>" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Acquisition Value:</label>
+                            <input type="number" name="acquisition_value" value="<?= htmlspecialchars($acquisition_value) ?>" class="form-control" required>
                         </div>
                         <div class="form-group">
                             <label>Location:</label>
@@ -197,8 +219,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 </section>
 
-
 <?php
-$content = ob_get_clean(); // Get the buffered content into $content
-include 'templates/main.php'; // Include the main layout template
+include 'templates/bottom.php'; // Include the main layout template
 ?>

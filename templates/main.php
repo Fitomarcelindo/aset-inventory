@@ -15,31 +15,32 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'includes/head.php';
 
 $content = $content ?? '';
+ob_start();
 ?>
 
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
         <?php
         if (file_exists('includes/header.php')) {
-            include_once 'includes/header.php';
+            include 'includes/header.php';
         } else {
             echo '<p>Error: header.php not found.</p>';
         }
 
         if (file_exists('includes/sidebar.php')) {
-            include_once 'includes/sidebar.php';
+            include 'includes/sidebar.php';
         } else {
             echo '<p>Error: sidebar.php not found.</p>';
         }
         ?>
 
         <div class="content-wrapper">
-            <?= htmlspecialchars($content, ENT_QUOTES, 'UTF-8') ?>
+            <?php echo $content; ?>
         </div>
 
         <?php
         if (file_exists('includes/footer.php')) {
-            include_once 'includes/footer.php';
+            include 'includes/footer.php';
         } else {
             echo '<p>Error: footer.php not found.</p>';
         }

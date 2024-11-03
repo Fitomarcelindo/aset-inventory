@@ -28,9 +28,15 @@
                     <i class="fa fa-money"></i><span>Area</span>
                 </a>
             </li>
+
             <li>
-                <a href="/laporan.php">
-                    <i class="fa fa-money"></i><span>Laporan</span>
+                <a href="mutation_list.php">
+                    <i class="fa fa-money"></i><span>Mutasi</span>
+                </a>
+            </li>
+            <li>
+                <a href="lab_list.php">
+                    <i class="fa fa-money"></i><span>Labs</span>
                 </a>
             </li>
             <?php if ($_SESSION['is_admin']): ?>

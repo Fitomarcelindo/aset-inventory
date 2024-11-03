@@ -69,6 +69,12 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="box-header">
             <h3 class="box-title">Laporan</h3>
             <div class="pull-right">
+                <form method="post">
+                    <button type="submit" class="btn btn-primary btn-flat">
+                        <i class="fa fa-user-plus"></i> Add Laporan
+                    </button>
+                </form>
+
             </div>
         </div>
         <div class="box-body table-responsive">
@@ -89,7 +95,7 @@ $reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td><?= htmlspecialchars($report['evaluation_date']) ?></td>
                             <td><?= htmlspecialchars($report['keterangan']) ?></td>
                             <td>
-                                <a href="view_inventory_report.php?date=<?= $report['evaluation_date'] ?>">View Report</a>
+                                <a href="view_inventory_report.php?id=<?= $report['report_evaluation_id'] ?>">View Report</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>

@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Generation Time: Oct 31, 2024 at 05:06 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Host: localhost:3306
+-- Generation Time: Nov 03, 2024 at 10:10 AM
+-- Server version: 8.0.30
+-- PHP Version: 8.2.24
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `areas` (
-  `area_id` int(11) NOT NULL,
-  `area_code` varchar(50) NOT NULL,
-  `area_name` varchar(255) NOT NULL
+  `area_id` int NOT NULL,
+  `area_code` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `area_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -39,7 +39,9 @@ CREATE TABLE `areas` (
 
 INSERT INTO `areas` (`area_id`, `area_code`, `area_name`) VALUES
 (1, 'asdsa', 'asdas'),
-(2, '12', 'as');
+(2, '12', 'as'),
+(3, '7282', 'aja'),
+(4, '2342', 'dsfsd');
 
 -- --------------------------------------------------------
 
@@ -48,25 +50,29 @@ INSERT INTO `areas` (`area_id`, `area_code`, `area_name`) VALUES
 --
 
 CREATE TABLE `assets` (
-  `asset_id` int(11) NOT NULL,
-  `area_id` int(11) DEFAULT NULL,
-  `puserif_number` varchar(50) DEFAULT NULL,
-  `puslibtang_number` varchar(50) DEFAULT NULL,
-  `name` varchar(255) NOT NULL,
-  `status` varchar(50) NOT NULL,
-  `description` text DEFAULT NULL,
-  `asset_class` int(11) DEFAULT NULL,
+  `asset_id` int NOT NULL,
+  `area_id` int DEFAULT NULL,
+  `puserif_number` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `puslibtang_number` varchar(50) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `description` text COLLATE utf8mb4_general_ci,
+  `asset_class` int DEFAULT NULL,
   `acquisition_date` date DEFAULT NULL,
-  `location` varchar(255) DEFAULT NULL,
-  `removed_date` date DEFAULT NULL
+  `location` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `acquisition_value` int NOT NULL,
+  `removed_date` date DEFAULT NULL,
+  `lab_id` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `assets`
 --
 
-INSERT INTO `assets` (`asset_id`, `area_id`, `puserif_number`, `puslibtang_number`, `name`, `status`, `description`, `asset_class`, `acquisition_date`, `location`, `removed_date`) VALUES
-(1, 2, '423', '12312', '12312', 'removed', '12321', 123123, '2024-10-30', '123213', '2024-10-31');
+INSERT INTO `assets` (`asset_id`, `area_id`, `puserif_number`, `puslibtang_number`, `name`, `status`, `description`, `asset_class`, `acquisition_date`, `location`, `acquisition_value`, `removed_date`, `lab_id`) VALUES
+(1, 2, '423', '12312', '12312', 'removed', '12321', 123123, '2024-10-30', '123213', 0, '2024-10-31', 1),
+(2, 3, '34543', '4354', '43456', 'idle', '435', 1, '2024-11-03', 'fgdf', 7686, NULL, 1),
+(3, 3, '34543', '4354', '43456', 'idle', '435', 1, '2024-11-03', 'fgdf', 7686, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -75,12 +81,21 @@ INSERT INTO `assets` (`asset_id`, `area_id`, `puserif_number`, `puslibtang_numbe
 --
 
 CREATE TABLE `asset_mutations` (
-  `mutation_id` int(11) NOT NULL,
-  `asset_id` int(11) DEFAULT NULL,
+  `mutation_id` int NOT NULL,
+  `asset_id` int DEFAULT NULL,
   `mutation_date` date NOT NULL,
-  `physical_mutation` int(11) NOT NULL,
-  `currency_mutation` int(11) DEFAULT NULL
+  `physical_mutation` int NOT NULL,
+  `currency_mutation` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `asset_mutations`
+--
+
+INSERT INTO `asset_mutations` (`mutation_id`, `asset_id`, `mutation_date`, `physical_mutation`, `currency_mutation`) VALUES
+(604943, 1, '2024-11-03', 3409, 3238),
+(604943, 2, '2024-11-03', 329928, 3829),
+(604943, 3, '2024-11-03', 3289, 218);
 
 -- --------------------------------------------------------
 
@@ -89,10 +104,10 @@ CREATE TABLE `asset_mutations` (
 --
 
 CREATE TABLE `asset_quantities` (
-  `asset_quantity_id` int(11) NOT NULL,
-  `asset_id` int(11) DEFAULT NULL,
+  `asset_quantity_id` int NOT NULL,
+  `asset_id` int DEFAULT NULL,
   `quantity_date` date NOT NULL,
-  `quantity` int(11) NOT NULL
+  `quantity` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -102,12 +117,12 @@ CREATE TABLE `asset_quantities` (
 --
 
 CREATE TABLE `financial_data` (
-  `financial_data_id` int(11) NOT NULL,
-  `asset_id` int(11) DEFAULT NULL,
+  `financial_data_id` int NOT NULL,
+  `asset_id` int DEFAULT NULL,
   `balance_date` date NOT NULL,
-  `balance_quantity` int(11) NOT NULL,
-  `balance_value` int(11) DEFAULT NULL,
-  `acquisition_value` int(11) DEFAULT NULL
+  `balance_quantity` int NOT NULL,
+  `balance_value` int DEFAULT NULL,
+  `acquisition_value` int DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -117,24 +132,35 @@ CREATE TABLE `financial_data` (
 --
 
 CREATE TABLE `inventory_evaluations` (
-  `inventory_evaluation_id` int(11) NOT NULL,
-  `asset_id` int(11) DEFAULT NULL,
-  `status` varchar(10) NOT NULL,
-  `comments` text DEFAULT NULL
+  `inventory_evaluation_id` int NOT NULL,
+  `evaluation_date` date NOT NULL,
+  `code_o` int DEFAULT '0',
+  `code_d` int DEFAULT '0',
+  `code_i` int DEFAULT '0',
+  `code_u` int DEFAULT '0',
+  `code_p` int DEFAULT '0',
+  `code_t` int DEFAULT '0',
+  `total` int GENERATED ALWAYS AS ((((((`code_o` + `code_d`) + `code_i`) + `code_u`) + `code_p`) + `code_t`)) STORED,
+  `asset_id` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `report_evaluations`
+-- Table structure for table `labs`
 --
 
-CREATE TABLE `report_evaluations` (
-  `report_evaluation_id` int(11) NOT NULL,
-  `inventory_evaluation_id` int(11) NOT NULL,
-  `evaluation_date` date NOT NULL,
-  `description` text NOT NULL
+CREATE TABLE `labs` (
+  `lab_id` int NOT NULL,
+  `lab_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `labs`
+--
+
+INSERT INTO `labs` (`lab_id`, `lab_name`) VALUES
+(1, '12312');
 
 -- --------------------------------------------------------
 
@@ -143,12 +169,12 @@ CREATE TABLE `report_evaluations` (
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(50) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
-  `address` varchar(255) DEFAULT NULL,
-  `is_admin` tinyint(1) DEFAULT 0
+  `id` int NOT NULL,
+  `username` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `is_admin` tinyint(1) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -174,13 +200,13 @@ ALTER TABLE `areas`
 --
 ALTER TABLE `assets`
   ADD PRIMARY KEY (`asset_id`),
-  ADD KEY `area_id` (`area_id`);
+  ADD KEY `area_id` (`area_id`),
+  ADD KEY `lab_id` (`lab_id`);
 
 --
 -- Indexes for table `asset_mutations`
 --
 ALTER TABLE `asset_mutations`
-  ADD PRIMARY KEY (`mutation_id`),
   ADD KEY `asset_id` (`asset_id`);
 
 --
@@ -205,11 +231,10 @@ ALTER TABLE `inventory_evaluations`
   ADD KEY `asset_id` (`asset_id`);
 
 --
--- Indexes for table `report_evaluations`
+-- Indexes for table `labs`
 --
-ALTER TABLE `report_evaluations`
-  ADD PRIMARY KEY (`report_evaluation_id`),
-  ADD KEY `inventory_evaluation_id` (`inventory_evaluation_id`);
+ALTER TABLE `labs`
+  ADD PRIMARY KEY (`lab_id`);
 
 --
 -- Indexes for table `users`
@@ -226,43 +251,43 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `areas`
 --
 ALTER TABLE `areas`
-  MODIFY `area_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `area_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `asset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT for table `asset_mutations`
---
-ALTER TABLE `asset_mutations`
-  MODIFY `mutation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `asset_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `asset_quantities`
 --
 ALTER TABLE `asset_quantities`
-  MODIFY `asset_quantity_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `asset_quantity_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `financial_data`
 --
 ALTER TABLE `financial_data`
-  MODIFY `financial_data_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `financial_data_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `inventory_evaluations`
 --
 ALTER TABLE `inventory_evaluations`
-  MODIFY `inventory_evaluation_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `inventory_evaluation_id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `labs`
+--
+ALTER TABLE `labs`
+  MODIFY `lab_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -272,37 +297,32 @@ ALTER TABLE `users`
 -- Constraints for table `assets`
 --
 ALTER TABLE `assets`
-  ADD CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`area_id`) REFERENCES `areas` (`area_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `assets_ibfk_1` FOREIGN KEY (`area_id`) REFERENCES `areas` (`area_id`) ON DELETE CASCADE ON UPDATE RESTRICT,
+  ADD CONSTRAINT `assets_ibfk_2` FOREIGN KEY (`lab_id`) REFERENCES `labs` (`lab_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `asset_mutations`
 --
 ALTER TABLE `asset_mutations`
-  ADD CONSTRAINT `asset_mutations_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `asset_mutations_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `asset_quantities`
 --
 ALTER TABLE `asset_quantities`
-  ADD CONSTRAINT `asset_quantities_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `asset_quantities_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `financial_data`
 --
 ALTER TABLE `financial_data`
-  ADD CONSTRAINT `financial_data_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `financial_data_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `inventory_evaluations`
 --
 ALTER TABLE `inventory_evaluations`
   ADD CONSTRAINT `inventory_evaluations_ibfk_1` FOREIGN KEY (`asset_id`) REFERENCES `assets` (`asset_id`) ON DELETE CASCADE;
-
---
--- Constraints for table `report_evaluations`
---
-ALTER TABLE `report_evaluations`
-  ADD CONSTRAINT `report_evaluations_ibfk_1` FOREIGN KEY (`inventory_evaluation_id`) REFERENCES `inventory_evaluations` (`inventory_evaluation_id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

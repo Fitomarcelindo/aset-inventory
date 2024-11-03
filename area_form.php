@@ -7,6 +7,7 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
     exit;
 }
+include('templates/top.php');
 
 $id = $_GET['id'] ?? null;
 $area_code = '';
@@ -51,7 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Area updated successfully.";
     }
 
-    header("Location: area_list.php");
+
+    echo '<script type="text/javascript">window.location.href = "area_list.php";</script>';
+    exit;
+
+
     exit;
 }
 ?>
@@ -82,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <form method="post">
                         <div class="form-group">
                             <label>Area Code:</label>
-                            <input class="form-control" type="text" name="area_code" value="<?= htmlspecialchars($area_code) ?>" required>
+                            <input class="form-control" type="number" name="area_code" value="<?= htmlspecialchars($area_code) ?>" required>
                             <br>
                         </div>
                         <div class="form-group">
@@ -104,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </section>
 
 
+
 <?php
-$content = ob_get_clean(); // Get the buffered content into $content
-include 'templates/main.php'; // Include the main layout template
+include 'templates/bottom.php'; // Include the main layout template
 ?>
