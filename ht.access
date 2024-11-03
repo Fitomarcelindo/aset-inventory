@@ -1,0 +1,6 @@
+# Redirect index.php to dashboard.php
+RewriteEngine On
+RewriteRule ^index\.php$ dashboard.php [R=301,L]
+
+# Custom 404 Error Page
+ErrorDocument 404 /404.php
